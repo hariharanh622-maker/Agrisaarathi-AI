@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#123c2a">
+    <meta name="description" content="Soil health, telemetry, and crop decision support for your farm.">
+    <link rel="icon" href="data:,">
+    <title>AgriSaarthi AI | Farm Intelligence</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="app-layout">
+    <aside class="sidebar">
+        <a class="brand" href="#dashboard" aria-label="AgriSaarthi AI dashboard">
+            <span class="brand-icon" aria-hidden="true">✳</span>
+            <span class="brand-copy"><strong>AgriSaarthi</strong><small>FARM INTELLIGENCE</small></span>
+        </a>
+
+        <p class="menu-title">YOUR WORKSPACE</p>
+        <nav class="navigation" aria-label="Main navigation">
+            <a class="nav-item active" href="#dashboard"><span aria-hidden="true">▦</span> Overview</a>
+            <a class="nav-item" href="#analysis"><span aria-hidden="true">◈</span> Soil analysis</a>
+            <a class="nav-item" href="#telemetry"><span aria-hidden="true">⌁</span> Telemetry</a>
+            <a class="nav-item" href="#agent"><span aria-hidden="true">✧</span> AI advisory</a>
+            <a class="nav-item" href="#weather"><span aria-hidden="true">☼</span> Weather</a>
+            <a class="nav-item" href="#history"><span aria-hidden="true">◷</span> History</a>
+        </nav>
+
+        <div class="sidebar-note">
+            <span class="note-icon" aria-hidden="true">✦</span>
+            <strong>Small steps, healthier soil.</strong>
+            <p>Use your latest soil test for the most useful guidance.</p>
+        </div>
+        <div class="sidebar-bottom">
+            <span class="status-dot"></span> All systems operational
+            <p>AgriSaarthi AI · Local demo</p>
+        </div>
+    </aside>
+
+    <main class="main-content" id="dashboard">
+        <header class="topbar">
+            <div class="topbar-title">
+                <p class="eyebrow">{{ today.strftime('%A, %B %d, %Y') }}</p>
+                <h1>Your farm, at a glance<span class="heading-period">.</span></h1>
+                <p class="subtitle">Clear soil insights for more confident decisions.</p>
+            </div>
+            <div class="topbar-actions">
+                <span class="local-badge"><span class="status-dot"></span> Local system</span>
+                <a class="topbar-cta" href="#analysis">＋ <span>New analysis</span></a>
+            </div>
+        </header>
+
+        <section class="welcome-card" aria-labelledby="welcome-title">
+            <div class="welcome-copy">
+                <span class="welcome-kicker"><span aria-hidden="true">✳</span> SMART FARMING. BETTER DECISIONS.</span>
+                <h2 id="welcome-title">Grow with a little more<br>confidence.</h2>
+                <p>Understand your soil, follow moisture trends, and explore a crop suggestion based on your field readings.</p>
+                <a class="welcome-button" href="#analysis">Explore your soil <span aria-hidden="true">→</span></a>
+            </div>
+            <div class="field-art" aria-hidden="true">
+                <span class="sun"></span>
+                <span class="hill hill-back"></span>
+                <span class="hill hill-front"></span>
+                <span class="plant plant-one">♧</span>
+                <span class="plant plant-two">♧</span>
+                <span class="plant plant-three">♧</span>
+                <span class="art-label">BETTER SOIL, BETTER TOMORROWS</span>
+            </div>
+        </section>
+
+        <section class="section-title overview-heading">
+            <div><p class="eyebrow">FIELD SNAPSHOT</p><h2>Soil at a glance</h2></div>
+            <span class="updated-label"><span class="status-dot"></span> <span id="snapshotStatus">Waiting for readings</span></span>
+        </section>
+
+        <section class="metric-grid" aria-label="Soil condition summary">
+            <article class="metric-card">
+                <div class="metric-top"><span class="metric-icon moisture-icon">≈</span><span class="metric-trend" id="moistureState">—</span></div>
+                <p class="metric-name">Soil moisture</p><strong class="metric-value" id="snapshotMoisture">--<small>%</small></strong>
+                <div class="meter"><span id="moistureMeter"></span></div>
+            </article>
+            <article class="metric-card">
+                <div class="metric-top"><span class="metric-icon ph-icon">pH</span><span class="metric-trend neutral" id="phState">—</span></div>
+                <p class="metric-name">Soil pH</p><strong class="metric-value" id="snapshotPh">--</strong>
+                <p class="metric-hint">Acidity / alkalinity reading</p>
+            </article>
+            <article class="metric-card">
+                <div class="metric-top"><span class="metric-icon nutrient-icon">N</span><span class="metric-trend neutral">NUTRIENT</span></div>
+                <p class="metric-name">Nitrogen</p><strong class="metric-value" id="snapshotNitrogen">--<small> kg/ha</small></strong>
+                <p class="metric-hint">Supports leafy growth</p>
+            </article>
+            <article class="metric-card">
+                <div class="metric-top"><span class="metric-icon temp-icon">↗</span><span class="metric-trend neutral">FIELD INPUT</span></div>
+                <p class="metric-name">Temperature</p><strong class="metric-value" id="snapshotTemperature">--<small>°C</small></strong>
+                <p class="metric-hint">Latest field reading</p>
+            </article>
+        </section>
+
+        <section class="dashboard-columns">
+            <article class="panel analysis-panel" id="analysis">
+                <div class="panel-heading">
+                    <div><p class="eyebrow">FIELD CHECK-IN</p><h2>Soil health analysis</h2><p class="panel-subtitle">Enter a recent reading to get a soil summary and decision support.</p></div>
+                    <span class="panel-symbol" aria-hidden="true">◈</span>
+                </div>
+                <form id="analysisForm">
+                    <div class="form-grid">
+                        <div class="field"><label for="moisture">Soil moisture <span>(%)</span></label><input id="moisture" type="number" name="moisture" min="0" max="100" step="any" value="35" required><small>Water available in soil</small></div>
+                        <div class="field"><label for="temperature">Temperature <span>(°C)</span></label><input id="temperature" type="number" name="temperature" step="any" value="28" required><small>Soil or local reading</small></div>
+                        <div class="field"><label for="humidity">Humidity <span>(%)</span></label><input id="humidity" type="number" name="humidity" min="0" max="100" step="any" value="65" required><small>Air moisture reading</small></div>
+                        <div class="field"><label for="rainfall">Rainfall <span>(mm)</span></label><input id="rainfall" type="number" name="rainfall" min="0" step="any" value="100" required><small>As recorded for your field</small></div>
+                        <div class="field"><label for="nitrogen">Nitrogen <span>(N)</span></label><input id="nitrogen" type="number" name="N" min="0" step="any" value="80" required><small>Soil test value</small></div>
+                        <div class="field"><label for="phosphorus">Phosphorus <span>(P)</span></label><input id="phosphorus" type="number" name="P" min="0" step="any" value="40" required><small>Soil test value</small></div>
+                        <div class="field"><label for="potassium">Potassium <span>(K)</span></label><input id="potassium" type="number" name="K" min="0" step="any" value="40" required><small>Soil test value</small></div>
+                        <div class="field"><label for="ph">Soil pH <span>(0–14)</span></label><input id="ph" type="number" name="ph" min="0" max="14" step="any" value="6.5" required><small>Acidity / alkalinity</small></div>
+                    </div>
+                    <div class="form-footer">
+                        <p><span aria-hidden="true">ⓘ</span> Use values from a recent soil test where possible.</p>
+                        <button type="submit" id="analyzeButton" class="primary-button"><span aria-hidden="true">✧</span> Analyze my farm</button>
+                    </div>
+                </form>
+            </article>
+
+            <article class="panel crop-panel" id="agent">
+                <div class="panel-heading">
+                    <div><p class="eyebrow">MACHINE LEARNING</p><h2>Crop recommendation</h2></div>
+                    <span class="panel-symbol crop-symbol" aria-hidden="true">♧</span>
+                </div>
+                <div class="crop-result">
+                    <span class="crop-emblem" aria-hidden="true">✳</span>
+                    <p class="crop-label">SUGGESTED CROP</p>
+                    <h3 id="cropResult">Ready when you are</h3>
+                    <p id="cropMessage">Submit field readings to see whether a trained crop model is available.</p>
+                </div>
+                <div class="crop-disclaimer"><span aria-hidden="true">ⓘ</span><span>Crop suggestions are decision support, not a guarantee of yield or suitability.</span></div>
+            </article>
+        </section>
+
+        <section class="panel soil-findings" id="soilFindings" hidden>
+            <div class="panel-heading">
+                <div><p class="eyebrow">SOIL HEALTH CHECK</p><h2>Reading summary</h2></div>
+                <span class="finding-count" id="findingCount"></span>
+            </div>
+            <div id="soilWarnings" class="warning-list"></div>
+            <div id="nutrientSummary" class="nutrient-summary"></div>
+        </section>
+
+        <section class="panel telemetry-panel" id="telemetry">
+            <div class="panel-heading telemetry-heading">
+                <div><p class="eyebrow">SAMPLE SENSOR DATA</p><h2>7-day soil moisture</h2><p class="panel-subtitle">A simple view of the latest available telemetry readings.</p></div>
+                <span class="trend-pill" id="telemetryTrend">Loading trend…</span>
+            </div>
+            <div id="telemetryContent" class="telemetry-content"><p class="empty-message">Loading sample telemetry…</p></div>
+        </section>
+
+        <section class="dashboard-columns lower-columns">
+            <article class="panel advisory-panel">
+                <div class="panel-heading">
+                    <div><p class="eyebrow">YOUR NEXT STEPS</p><h2>Farmer advisory</h2></div>
+                    <div class="language-switch" role="group" aria-label="Advisory language">
+                        <button id="englishButton" class="language-button active" type="button" aria-pressed="true">English</button>
+                        <button id="tamilButton" class="language-button" type="button" aria-pressed="false">தமிழ்</button>
+                    </div>
+                </div>
+                <ul id="adviceList" class="advice-list"><li>Run a soil analysis to receive practical guidance based on your readings.</li></ul>
+                <p class="advisory-note">For fertilizer or irrigation amounts, consult a qualified local agricultural advisor and verified soil test.</p>
+            </article>
+
+            <article class="panel weather-panel" id="weather">
+                <div class="panel-heading">
+                    <div><p class="eyebrow">WEATHER RISK</p><h2>Local conditions</h2></div>
+                    <span class="weather-icon" aria-hidden="true">☁</span>
+                </div>
+                <div class="weather-status"><span class="weather-indicator"></span><strong>Live weather not connected</strong></div>
+                <p class="weather-copy">Rainfall is considered only from the value you enter. Connect a weather service in a future release for local forecasts and risk alerts.</p>
+                <span class="future-label">FUTURE INTEGRATION</span>
+            </article>
+        </section>
+
+        <section class="panel workflow-panel">
+            <div class="panel-heading">
+                <div><p class="eyebrow">TRANSPARENT BY DESIGN</p><h2>How your AI agent works</h2><p class="panel-subtitle">Tools and data sources used in the latest analysis.</p></div>
+            </div>
+            <div id="agentSteps" class="agent-steps"><p class="empty-message">Your analysis workflow will appear here.</p></div>
+        </section>
+
+        <section class="panel history-panel" id="history">
+            <div class="panel-heading history-heading">
+                <div><p class="eyebrow">YOUR FIELD RECORDS</p><h2>Recent analysis history</h2><p class="panel-subtitle">The latest analyses saved on this device.</p></div>
+                <span class="history-count" id="historyCount">0 records</span>
+            </div>
+            <div id="historyContent"><p class="empty-message">Loading your saved analyses…</p></div>
+        </section>
+
+        <footer class="footer">
+            <p><strong>AgriSaarthi AI</strong> <span>·</span> Smart farming. Better decisions. Sustainable agriculture.</p>
+            <p>Decision-support information only. Results depend on input quality and model availability.</p>
+        </footer>
+    </main>
+</div>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+<script src="{{ url_for('static', filename='app.js') }}" defer></script>
+</body>
+</html>
