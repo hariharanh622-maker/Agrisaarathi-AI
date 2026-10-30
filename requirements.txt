@@ -1,3 +1,10 @@
+<<<<<<< HEAD
 Flask>=3.0,<4.0
 joblib>=1.3
 scikit-learn>=1.4
+=======
+google-genai>=1.0.0
+groq>=0.11.0
+python-dotenv>=1.0.0
+duckduckgo-search>=6.0.0
+>>>>>>> e9d5cd88c522a0c8d5d6166226a5bbef818fc4ca
